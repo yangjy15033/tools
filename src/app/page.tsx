@@ -1,87 +1,72 @@
-import Image from "next/image";
+"use client";
+
+import { useState ,useEffect } from "react";
+import FeatureGrid from "./featureGrid";
+import Svgs from "./svgs";
 
 export default function Home() {
+  const [ip, setIp] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchIp = async () => {
+      const res = await fetch('https://api.ipify.org?format=json');
+      const data: { ip: string } = await res.json();
+      setIp(data.ip); 
+    };
+    fetchIp();
+    // 这里可以放 Ajax、初始化、埋点、监听等
+  }, []); // 👈 空数组 = 只在挂载时执行一次
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    console.log("检测IP:", ip);
+    await new Promise(res => setTimeout(res, 1000));
+    setLoading(false);
+  };
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      <header className="row-start-1 flex items-center justify-center gap-[24px]">
+        <h1 className="text-3xl font-bold text-center">
+          IP检测
+        </h1><br/> 
+      </header>
+      <Svgs />
+      <main className="row-start-2 flex flex-col items-center justify-center gap-[24px]">
+        <p className="text-center text-lg text-gray-500">
+         最权威的IP检测工具，提供IP地址查询、地理位置、运营商信息、代理检测等多种功能。
+        </p>
+        <form
+          id="ip-form"
+          className="flex gap-2 mt-4"
+          onSubmit={handleSubmit}
+        >
+          <input
+            type="text"
+            id="ip"
+            name="ip"
+            placeholder="输入IP地址"
+            required
+            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            value={ip}
+            onChange={e => setIp(e.target.value)}
+            disabled={loading}
+          />
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+            disabled={loading}
           >
-            Read our docs
-          </a>
-        </div>
+            {loading ? "检测中..." : "检测"}
+          </button>
+        </form>
+         
+        <FeatureGrid/>        
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
       </footer>
     </div>
   );
