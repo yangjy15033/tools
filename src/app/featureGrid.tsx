@@ -3,6 +3,7 @@ import clsx from "clsx"; // 推荐：条件 className 拼接工具
 export default function FeatureGrid() {
   // 所有功能块
   const features = [
+    { key: "basics", label: "基本信息", icon: "#icon-gerenxinxi" },
     { key: "feature", label: "用户特征", icon: "#icon--sousuo" },
     { key: "operator", label: "运营商", icon: "#icon-wifi1" },
     { key: "vpn", label: "代理检测", icon: "#icon-network" },
@@ -59,7 +60,7 @@ export default function FeatureGrid() {
       </button>
     </div>
 
-      <ul className="grid grid-cols-3 gap-4">
+      <ul className="grid grid-cols-4 gap-4">
         {features.map(f => (
           <li key={f.key} className={clsx("p-2 rounded shadow text-center", {
             "opacity-50": status[f.key] === "loading",
